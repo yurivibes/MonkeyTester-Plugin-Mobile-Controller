@@ -1,6 +1,6 @@
-# MonkeyTester-Mobile-Controller
+# MonkeyTester-Plugin-Mobile-Controller
 
-The device-control backend for [MonkeyTester](http://192.168.125.70:3000/yurivibes/MonkeyTester).
+The device-control backend for [MonkeyTester](https://github.com/yurivibes/MonkeyTester).
 It runs on a Mac, owns every iPhone and Android phone, and exposes them over HTTP
 (see [API.md](API.md)). It knows nothing about tests or vision models.
 

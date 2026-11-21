@@ -100,5 +100,5 @@ nix run nixpkgs#python3Packages.bandit -- -r . -x ./tests
 ## Reporting a problem
 
 This is a private home-lab project. Open an issue on the Gitea repository
-(`yurivibes/MonkeyTester-Mobile-Controller`) or tell the owner directly. Don't post a working
+(`yurivibes/MonkeyTester-Plugin-Mobile-Controller`) or tell the owner directly. Don't post a working
 token in the issue.
