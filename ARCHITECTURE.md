@@ -12,8 +12,7 @@ MonkeyTester viewer ──┐                       ┌── Appium :4723 + WDA
 MonkeyTester runner ──┘           :8090       └── adb + ffmpeg ────────► Android
 ```
 
-Clients are the viewer and test runner in MonkeyTester. (The MonkeyTester-Mac launcher, which
-only used `/health` as a readiness check, is archived.) The API is the only coupling to them.
+Clients are the viewer and test runner in MonkeyTester. The API is the only coupling to them.
 
 ## Files
 
