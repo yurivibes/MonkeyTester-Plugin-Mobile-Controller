@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.blackjackfruit.monkeytester-mobile-controller</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/bin/python3</string>
+    <string>/Users/REPLACE_USER/MonkeyTester-Mobile-Controller/device_controller.py</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <!-- Required: the service listens on the LAN (0.0.0.0) and refuses to start
+         without a token, or while this placeholder is unchanged. Generate one with
+         python3 -c 'import secrets; print(secrets.token_urlsafe(32))'
+         and enter the same token in the MonkeyTester viewer's Settings.
+         chmod 600 this file: the token is stored in plain text. -->
+    <key>CONTROLLER_TOKEN</key>
+    <string>REPLACE_WITH_TOKEN</string>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+    <key>APPIUM_ORG_ID</key>
+    <string>REPLACE_TEAM_ID</string>
+    <key>APPIUM_SIGNING_ID</key>
+    <string>Apple Development</string>
+    <key>APPIUM_WDA_BUNDLE_ID</key>
+    <string>com.blackjackfruit.WebDriverAgentRunner</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/tmp/monkeytester-mobile-controller.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/monkeytester-mobile-controller.log</string>
+</dict>
+</plist>
