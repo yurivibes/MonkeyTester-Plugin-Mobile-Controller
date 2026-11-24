@@ -1,6 +1,6 @@
 # MonkeyTester-Plugin-Mobile-Controller
 
-The device-control backend for [MonkeyTester](https://github.com/yurivibes/MonkeyTester).
+The device-control backend for MonkeyTester.
 It runs on a Mac, owns every iPhone and Android phone, and exposes them over HTTP
 (see [API.md](API.md)). It knows nothing about tests or vision models.
 
@@ -11,8 +11,7 @@ MonkeyTester (Linux) ──HTTP──► device_controller.py (Mac, :8090)
                                  └── adb + ffmpeg ────► Android (input, video)
 ```
 
-> [!WARNING]
-> **A token is required by default.** The service listens on every interface
+> **Warning: a token is required by default.** The service listens on every interface
 > (`CONTROLLER_BIND=0.0.0.0`) so the MonkeyTester viewer can reach it over the LAN.
 > It **refuses to start** (exit code 2) unless `CONTROLLER_TOKEN` is set, or
 > `CONTROLLER_BIND` is loopback (`127.0.0.1`, `::1`, `localhost`). Enter the same

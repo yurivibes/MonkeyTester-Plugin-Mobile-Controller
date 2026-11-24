@@ -99,6 +99,6 @@ nix run nixpkgs#python3Packages.bandit -- -r . -x ./tests
 
 ## Reporting a problem
 
-This is a private home-lab project. Open an issue on the GitHub repository
-(`https://github.com/yurivibes/MonkeyTester-Plugin-Mobile-Controller/issues`) or tell the owner directly. Don't post a working
+This is a private home-lab project. Open an issue in this repository's issue tracker
+or tell the owner directly. Don't post a working
 token in the issue.
