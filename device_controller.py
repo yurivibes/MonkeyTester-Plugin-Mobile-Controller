@@ -90,10 +90,22 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 import android_stream
+from docs_page import docs_html
 
 # Bumped when the HTTP contract in API.md changes incompatibly.
 API_VERSION = 2
 SERVICE_NAME = "monkeytester-mobile-controller"
+
+# GET /docs renders this at request time; resolved from this file, not the CWD.
+README_PATH = Path(__file__).resolve().parent / "README.md"
+DOCS_CSP = ("default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; "
+            "form-action 'none'; frame-ancestors 'none'")
+
+
+def docs_available():
+    """True when README.md can be read, so /health only advertises working docs."""
+    return README_PATH.is_file() and os.access(README_PATH, os.R_OK)
+
 
 MAX_JSON_BYTES = 1024 * 1024
 
@@ -1294,6 +1306,22 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(data)
 
+    def _send_docs(self):
+        """GET /docs: README.md rendered as a self-contained HTML page."""
+        try:
+            text = README_PATH.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            raise ApiError(404, "not_found", "documentation is not available") from None
+        body = docs_html(SERVICE_NAME, text)
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Security-Policy", DOCS_CSP)
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
     def _send_file(self, path, ctype):
         """Stream a file, so a long recording isn't held in memory."""
         with open(path, "rb") as f:
@@ -1414,14 +1442,19 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/health":
             with _recordings_lock:
                 active = sum(1 for r in _recordings.values() if not r["done"])
-            return self._send_json(200, {
+            health = {
                 "ok": True,
                 "service": SERVICE_NAME,
                 "api_version": API_VERSION,
                 "appium": appium_ready(),
                 "adb": os.path.exists(ADB_BIN),
                 "recordings": active,
-            })
+            }
+            if docs_available():
+                health["docs"] = "/docs"
+            return self._send_json(200, health)
+        if path == "/docs":
+            return self._send_docs()
         if path == "/devices":
             return self._send_json(200, device_snapshot())
         if path == "/devices/events":

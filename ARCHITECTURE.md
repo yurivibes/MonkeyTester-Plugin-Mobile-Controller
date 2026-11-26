@@ -20,8 +20,10 @@ Clients are the viewer and test runner in MonkeyTester. The API is the only coup
 |---|---|
 | `device_controller.py` | Startup checks, HTTP routes, validation, Appium sessions, adb and devicectl calls, recordings |
 | `android_stream.py` | One shared `screenrecord | ffmpeg` capture per Android device, for streams and recordings |
+| `docs_page.py` | Renders README.md as the `GET /docs` HTML page. Shared verbatim by every MonkeyTester plugin; don't edit this copy |
 | `tests/fake_adb.py` | Stand-in for adb that serves real PNG and H.264 |
-| `tests/test_security.py` | Bind/token rule, auth, validators, traversal, size limits, upload cleanup |
+| `tests/test_security.py` | Bind/token rule, auth, validators, traversal, size limits, upload cleanup, `/docs` |
+| `tests/test_docs_page.py` | The shared README renderer (copied with `docs_page.py`) |
 
 Only the Python standard library is used.
 

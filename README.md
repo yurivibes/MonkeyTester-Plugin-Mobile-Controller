@@ -43,6 +43,11 @@ still says `REPLACE_WITH_TOKEN`). Copy it to `~/Library/LaunchAgents/`, run `chm
 it (the token is in plain text), and run `launchctl load` on it. The signing identity
 must be usable from that LaunchAgent (keychain unlocked).
 
+The LaunchAgent runs `device_controller.py` from this checkout, so this README is there at
+runtime: `GET /docs` serves it as an HTML page (token required) and `/health` reports
+`"docs": "/docs"`. A copy without README.md next to `device_controller.py` omits the `docs`
+field instead of advertising a broken page.
+
 ## Network and environment
 
 | Variable | Default | Meaning |
