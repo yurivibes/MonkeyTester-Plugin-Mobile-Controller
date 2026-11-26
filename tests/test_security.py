@@ -301,10 +301,47 @@ class HttpSecurityTests(unittest.TestCase):
     def test_health_is_open_and_leaks_nothing(self):
         status, body = self.request("GET", "/health", token=None)
         self.assertEqual(status, 200)
-        self.assertEqual(set(body), {"ok", "service", "api_version", "appium", "adb", "recordings"})
+        self.assertEqual(set(body), {"ok", "service", "api_version", "appium", "adb", "recordings",
+                                     "docs"})
+        self.assertEqual(body["docs"], "/docs")
         text = json.dumps(body)
         for secret in (TOKEN, FAKE_ADB, controller.APPIUM_URL, SERIAL, UDID):
             self.assertNotIn(secret, text)
+
+    def test_health_omits_docs_without_readme(self):
+        with patch.object(controller, "README_PATH", Path(self.tmp.name) / "missing.md"):
+            status, body = self.request("GET", "/health", token=None)
+        self.assertEqual(status, 200)
+        self.assertNotIn("docs", body)
+
+    def test_docs_renders_readme_as_html(self):
+        conn = http.client.HTTPConnection("127.0.0.1", self.port, timeout=30)
+        try:
+            conn.request("GET", "/docs", headers={"X-Controller-Token": TOKEN})
+            resp = conn.getresponse()
+            data = resp.read().decode()
+            self.assertEqual(resp.status, 200)
+            self.assertEqual(resp.getheader("Content-Type"), "text/html; charset=utf-8")
+            self.assertEqual(resp.getheader("Content-Security-Policy"), controller.DOCS_CSP)
+            self.assertIn("default-src 'none'", resp.getheader("Content-Security-Policy"))
+            self.assertIn("frame-ancestors 'none'", resp.getheader("Content-Security-Policy"))
+            self.assertEqual(resp.getheader("X-Content-Type-Options"), "nosniff")
+            self.assertEqual(resp.getheader("Cache-Control"), "no-store")
+        finally:
+            conn.close()
+        self.assertIn('<h1 id="monkeytester-plugin-mobile-controller">', data)
+        self.assertIn("monkeytester-mobile-controller documentation", data)
+
+    def test_docs_needs_the_token(self):
+        for token in (None, "wrong"):
+            with self.subTest(token=token):
+                status, body = self.request("GET", "/docs", token=token)
+                self.assertEqual((status, body["error"]["code"]), (401, "unauthorized"))
+
+    def test_docs_missing_readme_is_404_json(self):
+        with patch.object(controller, "README_PATH", Path(self.tmp.name) / "missing.md"):
+            status, body = self.request("GET", "/docs")
+        self.assertEqual((status, body["error"]["code"]), (404, "not_found"))
 
     def test_recording_traversal_is_rejected(self):
         for path in ("/recordings/..%2F..%2Fetc%2Fpasswd/video", "/recordings/../../etc/passwd/video",

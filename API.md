@@ -32,7 +32,8 @@ Branch on `code`. `message` is for people and can change.
 
 | Endpoint | Purpose |
 |---|---|
-| `GET /health` | `{ok, service, api_version, appium, adb, recordings}`. Needs no token, doesn't touch any device, and answers quickly, so use it for readiness checks |
+| `GET /health` | `{ok, service, api_version, appium, adb, recordings, docs?}`. Needs no token, doesn't touch any device, and answers quickly, so use it for readiness checks. `docs` is `"/docs"` when README.md is readable, and is omitted otherwise |
+| `GET /docs` | README.md rendered as a self-contained HTML page (`text/html; charset=utf-8`, strict `Content-Security-Policy`, `Cache-Control: no-store`). Needs the token like every other route. 404 `not_found` if README.md can't be read. The MonkeyTester viewer shows it via its `/plugins/docs/<name>` link |
 | `GET /devices` | `{devices: [{id, platform, model}], errors: {ios?, android?}}`. Always 200: one platform failing leaves the other listed, with the reason in `errors`. `model` is `null` on iOS |
 | `GET /devices/events` | Device list changes, see below |
 | `GET /devices/<id>/frame` | One PNG screenshot |
