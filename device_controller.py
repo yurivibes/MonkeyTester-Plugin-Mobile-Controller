@@ -174,12 +174,12 @@ DEVICE_EVENTS_KEEPALIVE_SECS = 15.0
 ADB_CONNECT = [p.strip() for p in
                os.environ.get("ADB_CONNECT", "").split(",") if p.strip()]
 
-APP_DIR = Path(tempfile.gettempdir()) / "vt_ios_apps"
-VIDEO_DIR = Path(tempfile.gettempdir()) / "vt_ios_video"
+APP_DIR = Path(tempfile.gettempdir()) / "mt_ios_apps"
+VIDEO_DIR = Path(tempfile.gettempdir()) / "mt_ios_video"
 APP_DIR.mkdir(mode=0o700, parents=True, exist_ok=True)
 VIDEO_DIR.mkdir(mode=0o700, parents=True, exist_ok=True)
 
-APPIUM_LOG = str(Path(tempfile.gettempdir()) / "vt_controller_appium.log")
+APPIUM_LOG = str(Path(tempfile.gettempdir()) / "mt_controller_appium.log")
 
 _appium_proc = None
 _appium_lock = threading.Lock()
@@ -444,7 +444,7 @@ def mobile(udid, script, args=None, timeout=60):
 
 def w3c_tap(udid, x, y, timeout=30):
     sid = get_session(udid)
-    actions = {"actions": [{"type": "pointer", "id": "vt",
+    actions = {"actions": [{"type": "pointer", "id": "mt",
                             "duration": 100, "button": 0,
                             "pointerType": "touch",
                             "actions": [
@@ -460,7 +460,7 @@ def w3c_tap(udid, x, y, timeout=30):
 def w3c_swipe(udid, x1, y1, x2, y2, ms=300, timeout=60):
     sid = get_session(udid)
     ms = int(max(50, min(60000, ms)))
-    actions = {"actions": [{"type": "pointer", "id": "vt",
+    actions = {"actions": [{"type": "pointer", "id": "mt",
                             "duration": ms, "button": 0,
                             "pointerType": "touch",
                             "actions": [
@@ -911,7 +911,7 @@ def parse_uiautomator_elements(xml_text):
 
 def adb_ui_dump(serial):
     """The window hierarchy XML from `uiautomator dump`."""
-    remote = f"/sdcard/vt_window_{uuid.uuid4().hex[:8]}.xml"
+    remote = f"/sdcard/mt_window_{uuid.uuid4().hex[:8]}.xml"
     try:
         out = adb(serial, "shell", "uiautomator", "dump", remote, timeout=60)
         if "dumped to" not in out:
@@ -931,7 +931,7 @@ def android_elements(serial):
 
 
 def adb_screenshot_png(serial):
-    remote = f"/sdcard/vt_ctrl_shot_{uuid.uuid4().hex[:8]}.png"
+    remote = f"/sdcard/mt_ctrl_shot_{uuid.uuid4().hex[:8]}.png"
     adb(serial, "shell", "screencap", "-p", remote)
     data = adb_bytes(serial, "exec-out", "cat", remote, timeout=60)
     if data[:8] != b"\x89PNG\r\n\x1a\n":

@@ -292,7 +292,7 @@ class AndroidRecording:
         self.serial = serial
         self.path = path
         self.log = log
-        self.remote = f"/sdcard/vt_rec_{os.path.splitext(os.path.basename(path))[0]}.mp4"
+        self.remote = f"/sdcard/mt_rec_{os.path.splitext(os.path.basename(path))[0]}.mp4"
         # 0 = no limit. Older Androids cap screenrecord at 180 s and may refuse
         # 0; retry with their maximum then.
         limits = [int(time_limit)] if time_limit else [0, 180]
