@@ -300,8 +300,8 @@ class ServiceTests(unittest.TestCase):
             {"id": "accept_button", "x": 340, "y": 2000, "w": 400, "h": 140, "label": "Accept"},
         ]})
         log = self.adb_log.read_text()
-        self.assertIn("shell uiautomator dump /sdcard/vt_window_", log)
-        self.assertIn("shell rm -f /sdcard/vt_window_", log, "dump left on the phone")
+        self.assertIn("shell uiautomator dump /sdcard/mt_window_", log)
+        self.assertIn("shell rm -f /sdcard/mt_window_", log, "dump left on the phone")
 
     def test_ios_elements_are_in_pixels(self):
         with patch.object(controller, "screen_size", return_value=(750, 1334)), \
